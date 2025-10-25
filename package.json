@@ -1,0 +1,30 @@
+{
+  "name": "morphui",
+  "version": "1.0.0",
+  "description": "An adaptive, AI-driven frontend that transforms itself based on user mood and behavior",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "npm run dev --workspace=@morphui/frontend",
+    "dev:backend": "npm run dev --workspace=@morphui/backend",
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces",
+    "lint": "npm run lint --workspaces"
+  },
+  "keywords": [
+    "adaptive-ui",
+    "ai",
+    "gemini",
+    "react",
+    "self-evolving",
+    "dynamic-ui"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
