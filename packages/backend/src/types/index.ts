@@ -74,3 +74,50 @@ export interface AdaptationResponse {
   mood: MoodAnalysis;
   effectiveness?: number;
 }
+
+export interface GeneratedTheme {
+  name: string;
+  colors: {
+    primary: string;
+    secondary: string;
+    background: string;
+    surface: string;
+    text: string;
+    textSecondary: string;
+    border: string;
+    success: string;
+    warning: string;
+    error: string;
+    accent: string;
+  };
+  spacing: {
+    xs: string;
+    sm: string;
+    md: string;
+    lg: string;
+    xl: string;
+  };
+  borderRadius: string;
+  shadows: {
+    sm: string;
+    md: string;
+    lg: string;
+  };
+  transitions: {
+    fast: string;
+    normal: string;
+    slow: string;
+  };
+}
+
+export interface ThemeGenerationRequest {
+  prompt: string;
+  baseTheme?: ThemeType;
+  sessionId?: string;
+}
+
+export interface ThemeGenerationResponse {
+  theme: GeneratedTheme;
+  reasoning: string;
+  timestamp: number;
+}

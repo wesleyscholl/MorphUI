@@ -46,7 +46,7 @@ MorphUI is a full-stack adaptive UI application that uses AI to dynamically tran
 │                                                               │
 │  Services:                                                    │
 │  • BehaviorAnalyzer - Session management & metrics          │
-│  • GeminiService - AI-powered analysis                      │
+│  • OllamaService - Local AI-powered analysis                │
 │                                                               │
 │  Behavior Analysis:                                          │
 │  • Click frequency calculation                               │
@@ -55,17 +55,22 @@ MorphUI is a full-stack adaptive UI application that uses AI to dynamically tran
 │  • Navigation pattern recognition                            │
 │  • Feature engagement scoring                                │
 └─────────────────────┬───────────────────────────────────────┘
-                      │ Gemini API Calls
+                      │ Local HTTP (localhost:11434)
 ┌─────────────────────▼───────────────────────────────────────┐
-│                    Google Gemini AI                          │
+│                    Ollama Local AI                           │
 ├──────────────────────────────────────────────────────────────┤
 │  Capabilities:                                                │
 │  • Mood inference from behavioral metrics                    │
 │  • UI adaptation recommendations                             │
 │  • Reasoning explanation generation                          │
+│  • 🔒 Privacy-first: All processing on your machine         │
 │                                                               │
-│  Models Used:                                                │
-│  • gemini-1.5-flash (Fast, cost-effective)                  │
+│  Models Supported:                                           │
+│  • gemma3:270m (Default - ultra-compact, very fast)         │
+│  • gemma2:2b (Lightweight)                                  │
+│  • gemma2:9b (More accurate)                                │
+│  • llama3.2:3b (Alternative)                                │
+│  • phi3:mini (Compact)                                      │
 └──────────────────────────────────────────────────────────────┘
 ```
 
@@ -183,7 +188,7 @@ index.ts (Express Server)
     │   ├── Interaction Tracking
     │   ├── Metrics Calculation
     │   └── Cleanup Timer
-    └── GeminiService
+    └── OllamaService
         ├── Mood Analysis
         ├── UI Adaptation
         └── Fallback Logic

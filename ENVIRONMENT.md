@@ -9,13 +9,28 @@ cd packages/backend
 cp .env.example .env
 ```
 
-### Required Variables
+### Required Setup
 
-#### GEMINI_API_KEY
-**Description**: Google Gemini AI API key for mood analysis and UI recommendations  
-**Required**: Yes  
-**Get it**: https://ai.google.dev/  
-**Example**: `AIzaSyD1234567890abcdefghijklmnopqrstuvwxyz`
+#### Ollama Installation
+MorphUI uses **Ollama** for local AI processing - no API keys needed!
+
+**Install Ollama**:
+- macOS/Linux: `brew install ollama` or visit https://ollama.ai
+- Start service: `ollama serve`
+- Pull model: `ollama pull gemma3:270m`
+
+### Optional Variables
+
+#### OLLAMA_URL
+**Description**: Ollama API endpoint  
+**Default**: `http://localhost:11434`  
+**Example**: `http://192.168.1.100:11434`
+
+#### OLLAMA_MODEL
+**Description**: Ollama model to use for AI analysis  
+**Default**: `gemma3:270m`  
+**Options**: `gemma3:270m`, `gemma2:2b`, `gemma2:9b`, `llama3.2:3b`, `phi3:mini`  
+**Example**: `gemma3:270m`
 
 ### Optional Variables
 
@@ -66,27 +81,32 @@ VITE_API_URL=https://your-backend-api.com/api
 
 ### Railway / Render / Heroku (Backend)
 ```bash
-GEMINI_API_KEY=your_actual_key_here
+OLLAMA_URL=http://localhost:11434
+OLLAMA_MODEL=gemma3:270m
 NODE_ENV=production
 FRONTEND_URL=https://your-frontend-url.com
 PORT=3000
 ```
 
+**Note**: For production deployment, you'll need to deploy Ollama separately or use a hosted Ollama instance.
+
 ## Security Notes
 
 ⚠️ **Never commit `.env` files to version control**
 
-✅ Always use environment variables for sensitive data  
-✅ Rotate API keys regularly  
-✅ Use different keys for development and production  
-✅ Limit API key permissions when possible
+✅ Always use environment variables for configuration  
+✅ Ollama runs locally by default (no external API calls)  
+✅ For production, secure your Ollama endpoint if exposed  
+✅ Consider using reverse proxy with authentication
 
 ## Troubleshooting
 
-### "GEMINI_API_KEY not found"
-- Check that `.env` exists in `packages/backend`
-- Verify the key is correctly formatted
-- Restart the backend server after changes
+### "Ollama service not available"
+- Check Ollama is running: `ollama list`
+- Start Ollama: `ollama serve`
+- Verify model is pulled: `ollama pull gemma3:270m`
+- Check URL: `curl http://localhost:11434/api/tags`
+- Restart the backend server after starting Ollama
 
 ### CORS errors
 - Verify `FRONTEND_URL` matches your frontend URL

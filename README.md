@@ -8,7 +8,7 @@
 [![React](https://img.shields.io/badge/React-18.2-61DAFB?logo=react)](https://reactjs.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-20+-339933?logo=node.js)](https://nodejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.2-3178C6?logo=typescript)](https://www.typescriptlang.org/)
-[![Gemini AI](https://img.shields.io/badge/Gemini-AI-4285F4?logo=google)](https://ai.google.dev/)
+[![Ollama](https://img.shields.io/badge/Ollama-Local_AI-000000)](https://ollama.ai/)
 
 </div>
 
@@ -21,7 +21,7 @@
 - ⚙️ **Behavior** - Click patterns, navigation flow, feature usage  
 - 💬 **Intent** - What you're trying to accomplish
 
-Built with ⚛️ React, 🟩 Node.js, and 🤖 Gemini AI, it explores the future of **self-evolving user experiences** — where design meets intelligence.
+Built with ⚛️ React, 🟩 Node.js, and 🤖 Ollama (local AI), it explores the future of **self-evolving user experiences** — where design meets intelligence.
 
 > 💡 **Every session feels different — because MorphUI learns you.**
 
@@ -35,9 +35,10 @@ Built with ⚛️ React, 🟩 Node.js, and 🤖 Gemini AI, it explores the futur
 - **Intelligent Feature Toggling** - Show features you actually use, hide clutter
 
 ### 🧠 AI-Powered Intelligence
-- **Real-Time Analysis** - Gemini AI analyzes your interactions
+- **Real-Time Analysis** - Local Ollama AI analyzes your interactions
 - **Predictive UX** - Anticipates what you need next
 - **Adaptive Recommendations** - UI evolves based on effectiveness metrics
+- **Privacy First** - All AI processing happens locally, no cloud APIs
 
 ### 🎭 Mood Detection
 - **Interaction Speed** - Fast clicks = stressed, slow = relaxed
@@ -69,10 +70,11 @@ Built with ⚛️ React, 🟩 Node.js, and 🤖 Gemini AI, it explores the futur
 │  │   Engine     │  │   Engine     │  │   Manager    │     │
 │  └──────────────┘  └──────────────┘  └──────────────┘     │
 └─────────────────────────────────────────────────────────────┘
-                            ↕️  Gemini API
+                            ↕️  Local HTTP
 ┌─────────────────────────────────────────────────────────────┐
-│                      🤖 Gemini AI Layer                      │
+│                  🤖 Ollama Local AI (gemma2)                 │
 │      Mood Inference · UX Generation · Recommendations       │
+│              ✅ Privacy-First · No Cloud APIs               │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -82,7 +84,7 @@ Built with ⚛️ React, 🟩 Node.js, and 🤖 Gemini AI, it explores the futur
 
 ### Prerequisites
 - Node.js 20+
-- Google Gemini API key ([Get one here](https://ai.google.dev/))
+- Ollama ([Install here](https://ollama.ai/))
 
 ### Installation
 
@@ -91,12 +93,21 @@ Built with ⚛️ React, 🟩 Node.js, and 🤖 Gemini AI, it explores the futur
 git clone https://github.com/wesleyscholl/MorphUI.git
 cd MorphUI
 
+# Install Ollama (if not installed)
+brew install ollama  # macOS
+# or visit https://ollama.ai for other platforms
+
+# Start Ollama
+ollama serve
+
+# Pull the AI model (in another terminal)
+ollama pull gemma3:270m
+
 # Install dependencies
 npm install
 
-# Configure environment
+# Configure environment (optional - defaults work)
 cp packages/backend/.env.example packages/backend/.env
-# Add your GEMINI_API_KEY to packages/backend/.env
 
 # Start development servers
 npm run dev

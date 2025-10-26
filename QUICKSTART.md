@@ -5,7 +5,7 @@ Get MorphUI running in 5 minutes! ⚡
 ## Prerequisites
 
 - Node.js 20+ ([Download](https://nodejs.org))
-- Google Gemini API key ([Get free key](https://ai.google.dev))
+- Ollama for local AI ([Install](https://ollama.ai))
 
 ## Installation
 
@@ -16,13 +16,19 @@ Get MorphUI running in 5 minutes! ⚡
 git clone https://github.com/wesleyscholl/MorphUI.git
 cd MorphUI
 
+# Install Ollama (if not installed)
+brew install ollama  # macOS
+# or visit https://ollama.ai for other platforms
+
+# Start Ollama
+ollama serve
+
+# Pull the AI model (in another terminal)
+ollama pull gemma3:270m
+
 # Run installation script
 chmod +x install.sh
 ./install.sh
-
-# Add your API key
-nano packages/backend/.env
-# Set: GEMINI_API_KEY=your_actual_key_here
 
 # Start development
 npm run dev
@@ -35,14 +41,23 @@ npm run dev
 git clone https://github.com/wesleyscholl/MorphUI.git
 cd MorphUI
 
+# Install Ollama
+brew install ollama  # or visit https://ollama.ai
+
+# Start Ollama service
+ollama serve
+
+# Pull AI model (in another terminal)
+ollama pull gemma3:270m
+
 # Install dependencies
 npm install
 cd packages/backend && npm install && cd ../..
 cd packages/frontend && npm install && cd ../..
 
-# Configure environment
+# Configure environment (optional - defaults work)
 cp packages/backend/.env.example packages/backend/.env
-# Edit packages/backend/.env and add your GEMINI_API_KEY
+# Defaults: OLLAMA_URL=http://localhost:11434, OLLAMA_MODEL=gemma3:270m
 
 # Start servers
 npm run dev
@@ -215,8 +230,9 @@ location.reload(); // Fresh start
 1. **Read the docs**: Check `ARCHITECTURE.md` for system design
 2. **Customize themes**: Edit `packages/frontend/src/theme/themes.ts`
 3. **Add features**: Create new feature cards in Dashboard
-4. **Improve AI**: Tune prompts in `packages/backend/src/services/gemini.ts`
-5. **Contribute**: See `CONTRIBUTING.md` for guidelines
+4. **Improve AI**: Tune prompts in `packages/backend/src/services/ollama.ts`
+5. **Try different models**: `ollama pull gemma2:2b` (faster) or `ollama pull llama3.2:3b`
+6. **Contribute**: See `CONTRIBUTING.md` for guidelines
 
 ## Resources
 

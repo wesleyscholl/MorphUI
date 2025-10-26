@@ -1,24 +1,23 @@
 import { Router, Request, Response } from 'express';
 import { getBehaviorAnalyzer } from '../services/behaviorAnalyzer.js';
-import { getGeminiService, initGeminiService } from '../services/gemini.js';
-import type { AdaptationRequest, UIAdaptation, MoodAnalysis, MoodState } from '../types/index.js';
+import { getOllamaService, initOllamaService } from '../services/ollama.js';
+import type { AdaptationRequest, UIAdaptation, MoodAnalysis, MoodState, ThemeGenerationRequest, ThemeGenerationResponse } from '../types/index.js';
 
 export const adaptationRouter = Router();
 
-// Initialize Gemini service
-const apiKey = process.env.GEMINI_API_KEY;
-let geminiAvailable = false;
+// Initialize Ollama service
+const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434';
+const ollamaModel = process.env.OLLAMA_MODEL || 'gemma3:270m';
+let ollamaAvailable = false;
 
-if (apiKey) {
-  try {
-    initGeminiService(apiKey);
-    geminiAvailable = true;
-    console.log('✅ Gemini AI service initialized');
-  } catch (error) {
-    console.warn('⚠️  Failed to initialize Gemini service. Using fallback mode.');
-  }
-} else {
-  console.warn('⚠️  GEMINI_API_KEY not found. AI features will use fallback logic.');
+try {
+  initOllamaService(ollamaUrl, ollamaModel);
+  ollamaAvailable = true;
+  console.log(`✅ Ollama AI service initialized (${ollamaModel} @ ${ollamaUrl})`);
+} catch (error) {
+  console.warn('⚠️  Failed to initialize Ollama service. Using fallback mode.');
+  console.warn('   Make sure Ollama is running: ollama serve');
+  console.warn(`   Then pull the model: ollama pull ${ollamaModel}`);
 }
 
 // Preset adaptations for demo/fallback mode
@@ -146,18 +145,18 @@ adaptationRouter.post('/recommend', async (req: Request, res: Response) => {
     let mood;
     let adaptation;
 
-    // Try Gemini AI if available
-    if (geminiAvailable) {
+    // Try Ollama AI if available
+    if (ollamaAvailable) {
       try {
-        const gemini = getGeminiService();
-        mood = await gemini.analyzeMood(metrics);
-        adaptation = await gemini.generateUIAdaptation({
+        const ollama = getOllamaService();
+        mood = await ollama.analyzeMood(metrics);
+        adaptation = await ollama.generateUIAdaptation({
           ...request,
           metrics,
           mood
         });
       } catch (error) {
-        console.error('Gemini API failed, using preset:', error);
+        console.error('Ollama API failed, using preset:', error);
         // Fall through to preset logic
       }
     }
@@ -191,7 +190,7 @@ adaptationRouter.post('/recommend', async (req: Request, res: Response) => {
       mood,
       sessionId: request.sessionId,
       timestamp: Date.now(),
-      source: geminiAvailable ? 'gemini' : 'preset'
+      source: ollamaAvailable ? 'ollama' : 'preset'
     });
 
   } catch (error) {
@@ -226,13 +225,13 @@ adaptationRouter.post('/mood', async (req: Request, res: Response) => {
 
     let mood;
 
-    // Try Gemini if available
-    if (geminiAvailable) {
+    // Try Ollama if available
+    if (ollamaAvailable) {
       try {
-        const gemini = getGeminiService();
-        mood = await gemini.analyzeMood(behaviorMetrics);
+        const ollama = getOllamaService();
+        mood = await ollama.analyzeMood(behaviorMetrics);
       } catch (error) {
-        console.error('Gemini mood analysis failed, using preset:', error);
+        console.error('Ollama mood analysis failed, using preset:', error);
       }
     }
 
@@ -258,7 +257,7 @@ adaptationRouter.post('/mood', async (req: Request, res: Response) => {
     res.json({ 
       mood, 
       sessionId,
-      source: geminiAvailable ? 'gemini' : 'preset'
+      source: ollamaAvailable ? 'ollama' : 'preset'
     });
 
   } catch (error) {
@@ -287,4 +286,88 @@ adaptationRouter.post('/feedback', (req: Request, res: Response) => {
     success: true,
     message: 'Feedback recorded' 
   });
+});
+
+// Generate custom theme based on prompt
+adaptationRouter.post('/generate-theme', async (req: Request, res: Response) => {
+  const { prompt, baseTheme, sessionId } = req.body as ThemeGenerationRequest;
+
+  if (!prompt || prompt.trim().length === 0) {
+    return res.status(400).json({ 
+      error: 'prompt is required and cannot be empty' 
+    });
+  }
+
+  if (prompt.length > 500) {
+    return res.status(400).json({ 
+      error: 'prompt must be less than 500 characters' 
+    });
+  }
+
+  try {
+    const ollamaService = getOllamaService();
+    
+    const result = await ollamaService.generateTheme({
+      prompt,
+      baseTheme,
+      sessionId
+    });
+
+    const response: ThemeGenerationResponse = {
+      theme: result.theme,
+      reasoning: result.reasoning,
+      timestamp: Date.now()
+    };
+
+    res.json(response);
+
+  } catch (error: any) {
+    console.error('Theme generation error:', error);
+    
+    // Check if it's a rate limit error from Ollama
+    const isRateLimitError = error?.response?.status === 429 || 
+                            error?.message?.includes('429') ||
+                            error?.message?.includes('rate limit');
+    
+    // Check if it's a connection error
+    const isConnectionError = error?.code === 'ECONNREFUSED' || 
+                             error?.message?.includes('ECONNREFUSED') ||
+                             error?.message?.includes('connect');
+    
+    if (isRateLimitError) {
+      // Return rate limit error to client
+      return res.status(429).json({ 
+        error: 'Ollama rate limit exceeded. Please wait a moment and try again, or use a preset theme.',
+        message: 'Too many requests to the AI service'
+      });
+    }
+    
+    if (isConnectionError) {
+      return res.status(503).json({ 
+        error: 'Cannot connect to Ollama service. Make sure it is running.',
+        message: 'Service unavailable'
+      });
+    }
+    
+    // For other errors, try fallback theme generation
+    try {
+      const ollamaService = getOllamaService();
+      const result = await ollamaService.generateTheme({ prompt, baseTheme, sessionId });
+      
+      const response: ThemeGenerationResponse = {
+        theme: result.theme,
+        reasoning: result.reasoning + ' (Generated using fallback)',
+        timestamp: Date.now()
+      };
+
+      return res.json(response);
+    } catch (fallbackError) {
+      console.error('Fallback theme generation error:', fallbackError);
+    }
+
+    res.status(500).json({ 
+      error: 'Failed to generate theme',
+      message: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
 });

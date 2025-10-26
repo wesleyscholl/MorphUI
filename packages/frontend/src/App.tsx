@@ -11,7 +11,7 @@ import { AdaptationIndicator } from './components/AdaptationIndicator';
 import { DemoControls } from './components/DemoControls';
 
 function App() {
-  const { theme, spacing, animations } = useAppStore();
+  const { theme, spacing, animations, customTheme } = useAppStore();
   
   // Initialize analytics session
   useEffect(() => {
@@ -43,7 +43,8 @@ function App() {
     return () => window.removeEventListener('error', handleError);
   }, [trackError]);
 
-  const currentTheme = getTheme(theme, spacing, animations);
+  // Use custom theme if available, otherwise use preset theme
+  const currentTheme = customTheme || getTheme(theme, spacing, animations);
 
   return (
     <ThemeProvider theme={currentTheme}>

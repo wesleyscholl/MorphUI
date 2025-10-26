@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { UIAdaptation, MoodAnalysis } from '../types';
+import type { UIAdaptation, MoodAnalysis, GeneratedTheme } from '../types';
 
 interface AppState {
   // UI State
@@ -18,8 +18,12 @@ interface AppState {
   // Demo modes
   demoMode: 'auto' | 'stress' | 'focus' | 'explorer' | 'relax' | null;
   
+  // Custom theme
+  customTheme: GeneratedTheme | null;
+  
   // Actions
   applyAdaptation: (adaptation: UIAdaptation, mood?: MoodAnalysis) => void;
+  applyCustomTheme: (theme: GeneratedTheme) => void;
   setDemoMode: (mode: AppState['demoMode']) => void;
   setIsAdapting: (isAdapting: boolean) => void;
   resetToDefault: () => void;
@@ -41,6 +45,7 @@ export const useAppStore = create<AppState>((set) => ({
   currentMood: null,
   isAdapting: false,
   demoMode: null,
+  customTheme: null,
 
   // Actions
   applyAdaptation: (adaptation, mood) => {
@@ -57,6 +62,14 @@ export const useAppStore = create<AppState>((set) => ({
     });
   },
 
+  applyCustomTheme: (theme) => {
+    set({
+      customTheme: theme,
+      theme: theme.name as any, // Store the custom theme name
+      adaptationReasoning: `Custom AI-generated theme: ${theme.name}`
+    });
+  },
+
   setDemoMode: (mode) => {
     set({ demoMode: mode });
   },
@@ -70,7 +83,8 @@ export const useAppStore = create<AppState>((set) => ({
       ...DEFAULT_STATE,
       currentMood: null,
       isAdapting: false,
-      demoMode: null
+      demoMode: null,
+      customTheme: null
     });
   }
 }));

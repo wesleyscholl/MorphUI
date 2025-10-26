@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { UserInteraction, BehaviorMetrics, AdaptationResponse, UIAdaptation } from '../types';
+import type { UserInteraction, BehaviorMetrics, AdaptationResponse, UIAdaptation, ThemeGenerationRequest, ThemeGenerationResponse } from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
@@ -110,7 +110,19 @@ class AdaptationService {
       console.error('Failed to submit feedback:', error);
     }
   }
+
+  async generateTheme(request: ThemeGenerationRequest): Promise<ThemeGenerationResponse> {
+    const response = await axios.post<ThemeGenerationResponse>(
+      `${API_BASE_URL}/adaptation/generate-theme`,
+      request
+    );
+    return response.data;
+  }
 }
 
 export const analyticsService = new AnalyticsService();
 export const adaptationService = new AdaptationService();
+
+// Export convenience functions
+export const generateTheme = (request: ThemeGenerationRequest) => 
+  adaptationService.generateTheme(request);

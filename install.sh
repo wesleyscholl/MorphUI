@@ -44,7 +44,7 @@ echo "🔧 Setting up environment..."
 if [ ! -f "packages/backend/.env" ]; then
     cp packages/backend/.env.example packages/backend/.env
     echo "✅ Created packages/backend/.env"
-    echo "⚠️  Please add your GEMINI_API_KEY to packages/backend/.env"
+    echo "⚠️  Please ensure Ollama is installed and running"
 else
     echo "ℹ️  packages/backend/.env already exists"
 fi
@@ -53,9 +53,10 @@ echo ""
 echo "✅ Installation complete!"
 echo ""
 echo "📝 Next steps:"
-echo "   1. Add your GEMINI_API_KEY to packages/backend/.env"
-echo "      Get one at: https://ai.google.dev/"
-echo "   2. Run 'npm run dev' to start development servers"
-echo "   3. Open http://localhost:5173 in your browser"
+echo "   1. Install Ollama: brew install ollama (or visit https://ollama.ai)"
+echo "   2. Start Ollama: ollama serve"
+echo "   3. Pull model: ollama pull gemma3:270m"
+echo "   4. Run 'npm run dev' to start development servers"
+echo "   5. Open http://localhost:5173 in your browser"
 echo ""
 echo "🚀 Happy coding with MorphUI!"
