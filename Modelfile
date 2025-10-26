@@ -1,5 +1,0 @@
-# Modelfile
-FROM gemma3:270m
-PARAMETER temperature 0.9
-PARAMETER num_predict 100
-SYSTEM "You are a concise assistant that answers briefly."
