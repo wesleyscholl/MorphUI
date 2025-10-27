@@ -17,7 +17,7 @@ MorphUI uses **Ollama** for local AI processing - no API keys needed!
 **Install Ollama**:
 - macOS/Linux: `brew install ollama` or visit https://ollama.ai
 - Start service: `ollama serve`
-- Pull model: `ollama pull gemma3:270m`
+- Pull model: `ollama pull gemma2:270m`
 
 ### Optional Variables
 
@@ -28,9 +28,9 @@ MorphUI uses **Ollama** for local AI processing - no API keys needed!
 
 #### OLLAMA_MODEL
 **Description**: Ollama model to use for AI analysis  
-**Default**: `gemma3:270m`  
-**Options**: `gemma3:270m`, `gemma2:2b`, `gemma2:9b`, `llama3.2:3b`, `phi3:mini`  
-**Example**: `gemma3:270m`
+**Default**: `gemma2:270m`  
+**Options**: `gemma2:270m`, `gemma2:2b`, `gemma2:9b`, `llama3.2:3b`, `phi3:mini`  
+**Example**: `gemma2:270m`
 
 ### Optional Variables
 
@@ -82,7 +82,7 @@ VITE_API_URL=https://your-backend-api.com/api
 ### Railway / Render / Heroku (Backend)
 ```bash
 OLLAMA_URL=http://localhost:11434
-OLLAMA_MODEL=gemma3:270m
+OLLAMA_MODEL=gemma2:270m
 NODE_ENV=production
 FRONTEND_URL=https://your-frontend-url.com
 PORT=3000
@@ -104,7 +104,7 @@ PORT=3000
 ### "Ollama service not available"
 - Check Ollama is running: `ollama list`
 - Start Ollama: `ollama serve`
-- Verify model is pulled: `ollama pull gemma3:270m`
+- Verify model is pulled: `ollama pull gemma2:270m`
 - Check URL: `curl http://localhost:11434/api/tags`
 - Restart the backend server after starting Ollama
 

@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from '../store/appStore';
 import { FeatureCard } from './FeatureCard';
+import { AnimatedLogo } from './AnimatedLogo';
+import { ParticleBackground } from './ParticleBackground';
 
 const features = {
   dashboard: { icon: '📊', title: 'Dashboard', description: 'Overview and key metrics' },
@@ -34,9 +36,13 @@ export function Dashboard() {
 
   return (
     <Container>
+      <ParticleBackground />
       <Header>
-        <Title>🧬 MorphUI</Title>
-        <Subtitle>Adaptive Interface</Subtitle>
+        <AnimatedLogo />
+        <TitleGroup>
+          <Title>MorphUI</Title>
+          <Subtitle>Adaptive Interface · Powered by AI</Subtitle>
+        </TitleGroup>
         {currentMood && (
           <MoodBadge mood={currentMood.mood}>
             {getMoodEmoji(currentMood.mood)} {currentMood.mood}
@@ -97,6 +103,7 @@ function getMoodEmoji(mood: string): string {
 }
 
 const Container = styled.div`
+  position: relative;
   min-height: 100vh;
   padding: ${({ theme }) => theme.spacing.xl};
   
@@ -106,29 +113,57 @@ const Container = styled.div`
 `;
 
 const Header = styled.header`
+  position: relative;
+  z-index: 1;
   margin-bottom: ${({ theme }) => theme.spacing.xl};
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.md};
+`;
+
+const TitleGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.xs};
 `;
 
 const Title = styled.h1`
-  font-size: 3rem;
-  margin-bottom: ${({ theme }) => theme.spacing.sm};
-  background: linear-gradient(135deg, ${({ theme }) => theme.colors.primary}, ${({ theme }) => theme.colors.secondary});
+  font-size: 4rem;
+  font-weight: 800;
+  margin: 0;
+  background: linear-gradient(
+    135deg,
+    ${({ theme }) => theme.colors.primary},
+    ${({ theme }) => theme.colors.secondary},
+    ${({ theme }) => theme.colors.accent}
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  letter-spacing: -0.02em;
+  text-shadow: 0 0 40px ${({ theme }) => theme.colors.primary}40;
+  
+  @media (max-width: 768px) {
+    font-size: 2.5rem;
+  }
 `;
 
 const Subtitle = styled.p`
   color: ${({ theme }) => theme.colors.textSecondary};
-  font-size: 1.2rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin: 0;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 `;
 
 const MoodBadge = styled.div<{ mood: string }>`
   display: inline-block;
-  margin-top: ${({ theme }) => theme.spacing.md};
-  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
-  background-color: ${({ theme, mood }) => {
+  margin-top: ${({ theme }) => theme.spacing.sm};
+  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.lg};
+  background: ${({ theme, mood }) => {
     const colors: Record<string, string> = {
       stressed: theme.colors.error,
       focused: theme.colors.primary,
@@ -136,37 +171,85 @@ const MoodBadge = styled.div<{ mood: string }>`
       exploratory: theme.colors.accent,
       frustrated: theme.colors.warning
     };
-    return colors[mood] || theme.colors.primary;
+    return `linear-gradient(135deg, ${colors[mood] || theme.colors.primary}, ${colors[mood] || theme.colors.primary}dd)`;
   }};
   color: white;
-  border-radius: ${({ theme }) => theme.borderRadius};
+  border-radius: 24px;
   font-weight: 600;
+  font-size: 0.9rem;
   text-transform: capitalize;
-  transition: ${({ theme }) => theme.transitions.normal};
+  transition: all ${({ theme }) => theme.transitions.normal};
+  box-shadow: 0 4px 12px ${({ theme, mood }) => {
+    const colors: Record<string, string> = {
+      stressed: theme.colors.error,
+      focused: theme.colors.primary,
+      relaxed: theme.colors.success,
+      exploratory: theme.colors.accent,
+      frustrated: theme.colors.warning
+    };
+    return `${colors[mood] || theme.colors.primary}40`;
+  }};
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px ${({ theme, mood }) => {
+      const colors: Record<string, string> = {
+        stressed: theme.colors.error,
+        focused: theme.colors.primary,
+        relaxed: theme.colors.success,
+        exploratory: theme.colors.accent,
+        frustrated: theme.colors.warning
+      };
+      return `${colors[mood] || theme.colors.primary}50`;
+    }};
+  }
 `;
 
 const AdaptationInfo = styled(motion.div)`
-  padding: ${({ theme }) => theme.spacing.md};
-  margin-bottom: ${({ theme }) => theme.spacing.lg};
-  background-color: ${({ theme }) => theme.colors.surface};
+  position: relative;
+  z-index: 1;
+  padding: ${({ theme }) => theme.spacing.lg};
+  margin-bottom: ${({ theme }) => theme.spacing.xl};
+  background: ${({ theme }) => `linear-gradient(135deg, ${theme.colors.surface}cc, ${theme.colors.background}cc)`};
+  backdrop-filter: blur(16px);
   border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.borderRadius};
+  border-radius: 16px;
   text-align: center;
-  color: ${({ theme }) => theme.colors.textSecondary};
-  box-shadow: ${({ theme }) => theme.shadows.sm};
+  color: ${({ theme }) => theme.colors.text};
+  box-shadow: ${({ theme }) => theme.shadows.lg};
+  font-size: 1rem;
+  line-height: 1.6;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    padding: 2px;
+    background: linear-gradient(135deg, 
+      ${({ theme }) => theme.colors.primary}60, 
+      ${({ theme }) => theme.colors.secondary}60
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
 `;
 
 const FeaturesGrid = styled.div<{ layout: string; columns: number }>`
+  position: relative;
+  z-index: 1;
   display: grid;
   grid-template-columns: ${({ columns }) => `repeat(${columns}, 1fr)`};
-  gap: ${({ theme }) => theme.spacing.lg};
+  gap: ${({ theme }) => theme.spacing.xl};
   
   ${({ layout }) => layout === 'list' && `
-    gap: 12px;
+    gap: 16px;
   `}
   
   ${({ layout }) => layout === 'timeline' && `
-    max-width: 800px;
+    max-width: 900px;
     margin: 0 auto;
   `}
   
@@ -176,5 +259,6 @@ const FeaturesGrid = styled.div<{ layout: string; columns: number }>`
   
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
+    gap: ${({ theme }) => theme.spacing.md};
   }
 `;
