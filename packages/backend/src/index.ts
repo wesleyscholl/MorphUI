@@ -6,8 +6,18 @@ import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
 import { adaptationRouter } from './routes/adaptation.js';
 import { analyticsRouter } from './routes/analytics.js';
+import { visualsRouter } from './routes/visuals.js';
+import { initVisualGenerationService } from './services/visualGeneration.js';
 
 dotenv.config();
+
+// Initialize services
+if (process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== 'your_gemini_api_key_here') {
+  initVisualGenerationService(process.env.GEMINI_API_KEY);
+  console.log('✅ Visual Generation Service initialized');
+} else {
+  console.warn('⚠️  GEMINI_API_KEY not set - visual generation will use fallbacks only');
+}
 
 const app: Express = express();
 const PORT = process.env.PORT || 3000;
@@ -43,6 +53,7 @@ app.get('/health', (_req: Request, res: Response) => {
 // API routes
 app.use('/api/adaptation', adaptationRouter);
 app.use('/api/analytics', analyticsRouter);
+app.use('/api/visuals', visualsRouter);
 
 // 404 handler
 app.use((_req: Request, res: Response) => {

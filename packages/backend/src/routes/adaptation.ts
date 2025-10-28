@@ -271,7 +271,7 @@ adaptationRouter.post('/mood', async (req: Request, res: Response) => {
 
 // Submit adaptation feedback
 adaptationRouter.post('/feedback', (req: Request, res: Response) => {
-  const { sessionId, adaptationId, effectiveness, userFeedback } = req.body;
+  const { sessionId, adaptationId, effectiveness: _effectiveness, userFeedback: _userFeedback } = req.body;
 
   if (!sessionId || !adaptationId) {
     return res.status(400).json({ 
