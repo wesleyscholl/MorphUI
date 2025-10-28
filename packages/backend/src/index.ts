@@ -7,7 +7,9 @@ import dotenv from 'dotenv';
 import { adaptationRouter } from './routes/adaptation.js';
 import { analyticsRouter } from './routes/analytics.js';
 import { visualsRouter } from './routes/visuals.js';
+import aiStudioRouter from './routes/aiStudio.js';
 import { initVisualGenerationService } from './services/visualGeneration.js';
+import { initAIStudio } from './services/AIStudio.js';
 
 dotenv.config();
 
@@ -15,8 +17,12 @@ dotenv.config();
 if (process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== 'your_gemini_api_key_here') {
   initVisualGenerationService(process.env.GEMINI_API_KEY);
   console.log('✅ Visual Generation Service initialized');
+  
+  initAIStudio(process.env.GEMINI_API_KEY);
+  console.log('✅ AI Studio (Multi-Agent System) initialized');
 } else {
   console.warn('⚠️  GEMINI_API_KEY not set - visual generation will use fallbacks only');
+  console.warn('⚠️  GEMINI_API_KEY not set - AI Studio will not be available');
 }
 
 const app: Express = express();
@@ -54,6 +60,7 @@ app.get('/health', (_req: Request, res: Response) => {
 app.use('/api/adaptation', adaptationRouter);
 app.use('/api/analytics', analyticsRouter);
 app.use('/api/visuals', visualsRouter);
+app.use('/api/ai-studio', aiStudioRouter);
 
 // 404 handler
 app.use((_req: Request, res: Response) => {

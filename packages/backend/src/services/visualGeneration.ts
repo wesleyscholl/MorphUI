@@ -33,7 +33,7 @@ export class VisualGenerationService {
     timeOfDay: string,
     context?: string
   ): Promise<ColorPalette> {
-    const model = this.gemini.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
+    const model = this.gemini.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
     const prompt = `You are an expert UI/UX designer specializing in color theory and emotional design.
 
@@ -95,7 +95,7 @@ Output ONLY valid JSON in this exact format (no markdown, no code blocks):
     mood: string,
     color: string
   ): Promise<SVGIcon> {
-    const model = this.gemini.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
+    const model = this.gemini.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
     const prompt = `You are an expert SVG icon designer.
 
