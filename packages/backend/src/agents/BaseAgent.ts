@@ -69,15 +69,32 @@ export abstract class BaseAgent {
 
   /**
    * Helper to call Gemini API with structured prompts
+   * Includes retry logic for rate limit errors
    */
-  protected async callGemini(prompt: string): Promise<string> {
-    try {
-      const result = await this.model.generateContent(prompt);
-      return result.response.text();
-    } catch (error) {
-      console.error(`[${this.agentType}] Gemini API error:`, error);
-      throw error;
+  protected async callGemini(prompt: string, retries: number = 2): Promise<string> {
+    for (let attempt = 0; attempt <= retries; attempt++) {
+      try {
+        const result = await this.model.generateContent(prompt);
+        return result.response.text();
+      } catch (error: any) {
+        // Check if it's a rate limit error (429 or specific error message)
+        const isRateLimitError = 
+          error.status === 429 || 
+          error.message?.includes('rate limit') ||
+          error.message?.includes('RESOURCE_EXHAUSTED');
+
+        if (isRateLimitError && attempt < retries) {
+          const waitTime = Math.pow(2, attempt) * 10000; // Exponential backoff: 10s, 20s
+          console.warn(`[${this.agentType}] Rate limit hit, waiting ${waitTime / 1000}s before retry ${attempt + 1}/${retries}`);
+          await new Promise(resolve => setTimeout(resolve, waitTime));
+          continue;
+        }
+
+        console.error(`[${this.agentType}] Gemini API error:`, error);
+        throw error;
+      }
     }
+    throw new Error('Max retries reached');
   }
 
   /**

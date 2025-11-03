@@ -133,8 +133,18 @@ cd /Users/wscholl/MorphUI
 ## 📊 Performance
 
 - **Quick Design**: ~5-10 seconds (single API call)
-- **Full Collaboration**: ~30-90 seconds (6-9 API calls depending on iterations)
+- **Full Collaboration**: ~45-90 seconds (includes 5s delays between API calls for rate limiting)
 - **Consensus Rate**: ~70-80% on first iteration
+
+### Rate Limit Protection
+
+Built-in safeguards to respect Gemini API limits:
+- **Automatic delays**: 5 seconds between API calls within a collaboration
+- **Exponential backoff**: Automatic retry with 10s/20s delays if rate limit hit
+- **Free tier safe**: 3 calls per iteration × 2 iterations = 6 calls (well under 15 RPM limit)
+- **Retry logic**: Up to 2 retries per agent call with exponential backoff
+
+The system adds ~15-20 seconds to total collaboration time but ensures reliable operation within rate limits.
 
 ## 🎯 Use Cases
 
@@ -288,10 +298,14 @@ The AI Studio will power:
 - Restart backend server
 
 **Slow responses:**
-- Normal for multi-agent collaboration (30-90 seconds)
-- Use quick design for faster results
+- Normal for multi-agent collaboration (45-90 seconds)
+- Includes 5-second delays between API calls for rate limit protection
+- Use quick design for faster results (no rate limit delays)
 
-**No consensus reached:**
+**Rate limit errors:**
+- System has automatic retry with exponential backoff
+- Adds 5s delay between each agent call
+- If persistent, you may have exceeded daily quota or need paid tier
 - System provides best available design after 2 iterations
 - Check concerns from each agent in response
 

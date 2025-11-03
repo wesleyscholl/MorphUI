@@ -31,11 +31,30 @@ export class AIStudio {
   private designer: DesignerAgent;
   private engineer: EngineerAgent;
   private ux: UXAgent;
+  private lastRequestTime: number = 0;
+  private minDelayBetweenRequests: number = 5000; // 5 seconds between agent calls
 
   constructor(apiKey: string) {
     this.designer = new DesignerAgent(apiKey);
     this.engineer = new EngineerAgent(apiKey);
     this.ux = new UXAgent(apiKey);
+  }
+
+  /**
+   * Add delay to respect rate limits
+   * Ensures minimum 5 seconds between API calls to avoid hitting rate limits
+   */
+  private async respectRateLimit(): Promise<void> {
+    const now = Date.now();
+    const timeSinceLastRequest = now - this.lastRequestTime;
+    
+    if (timeSinceLastRequest < this.minDelayBetweenRequests) {
+      const delayNeeded = this.minDelayBetweenRequests - timeSinceLastRequest;
+      console.log(`[AIStudio] Rate limit: waiting ${Math.round(delayNeeded / 1000)}s before next request`);
+      await new Promise(resolve => setTimeout(resolve, delayNeeded));
+    }
+    
+    this.lastRequestTime = Date.now();
   }
 
   /**
@@ -81,6 +100,7 @@ export class AIStudio {
 
       // Step 1: Designer proposes a design
       console.log('[AIStudio] Designer is proposing design...');
+      await this.respectRateLimit();
       designerProposal = await this.designer.processRequest(request.prompt, context);
       
       discussion.push({
@@ -99,6 +119,7 @@ export class AIStudio {
 
       // Step 2: Engineer reviews the design
       console.log('[AIStudio] Engineer is reviewing...');
+      await this.respectRateLimit();
       engineerReview = await this.engineer.reviewProposal(designerProposal, context);
       
       discussion.push({
@@ -117,6 +138,7 @@ export class AIStudio {
 
       // Step 3: UX reviews the design
       console.log('[AIStudio] UX expert is reviewing...');
+      await this.respectRateLimit();
       uxReview = await this.ux.reviewProposal(designerProposal, context);
       
       discussion.push({

@@ -310,6 +310,93 @@ Open an issue or reach out:
 
 ---
 
+## 📊 Project Status
+
+**Status:** 🚧 **Prototype/Research Project**
+
+### Current State
+- ✅ Core architecture designed
+- ✅ Mood detection system implemented
+- ✅ Dynamic theme switching
+- ✅ Behavior tracking framework
+- ✅ Local Ollama integration
+- ⚠️ Limited real-world testing
+- ⚠️ Experimental stage
+
+### What Works
+- Mood inference from interaction patterns
+- Real-time UI morphing
+- Local AI processing (privacy-first)
+- Multiple adaptive themes
+- Behavior analytics
+
+### What Needs Work
+- More sophisticated ML models
+- Expanded theme library
+- Better personalization algorithms
+- Production-grade performance
+- Accessibility compliance
+
+## 🗺️ Roadmap
+
+### v0.2 (In Progress)
+- 🔄 Enhanced mood detection algorithms
+- 🔄 More theme variations
+- 🔄 Better performance optimization
+- 🔄 Accessibility improvements
+
+### v0.3 (Planned)
+- 📋 User preference learning
+- 📋 A/B testing framework for morphing strategies
+- 📋 Export/import user profiles
+- 📋 Developer toolkit for custom adaptations
+
+### v1.0 (Future Vision)
+- 📋 Production-ready component library
+- 📋 Integration with popular frameworks (Next.js, Vue, Svelte)
+- 📋 Cloud-based personalization (optional)
+- 📋 Marketplace for adaptive themes
+- 📋 Enterprise features (team patterns, compliance modes)
+
+## 🎯 Next Steps
+
+### For Researchers
+- Study mood detection accuracy
+- Experiment with different ML models
+- Contribute research findings
+- Test with diverse user groups
+
+### For Developers
+- Try the demo and provide feedback
+- Contribute new adaptive themes
+- Improve detection algorithms
+- Add framework integrations
+
+### For Designers
+- Create new morphing patterns
+- Design accessibility-focused adaptations
+- Test with real users
+- Contribute UX research
+
+## 💡 Research Questions
+
+This project explores:
+- Can UI adapt faster than users notice?
+- What's the right balance of adaptation vs. consistency?
+- How do users react to morphing interfaces?
+- Privacy implications of behavior tracking?
+- Accessibility benefits of adaptive UI?
+
+## ⚠️ Ethical Considerations
+
+- **Privacy:** All processing happens locally by default
+- **Transparency:** Users should know UI is adapting
+- **Control:** Users must be able to disable adaptation
+- **Bias:** Avoid reinforcing problematic patterns
+- **Accessibility:** Ensure adaptations don't harm usability
+
+---
+
 <div align="center">
 
 **Built with ❤️ by [Wesley Scholl](https://github.com/wesleyscholl)**
@@ -317,5 +404,7 @@ Open an issue or reach out:
 *MorphUI - Because your interface should know you*
 
 ⭐ Star this repo if you believe in adaptive interfaces!
+
+**Note:** This is a research project exploring adaptive UI. Not production-ready without significant testing and refinement.
 
 </div>
